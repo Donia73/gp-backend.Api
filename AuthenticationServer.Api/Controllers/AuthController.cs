@@ -16,15 +16,17 @@ namespace AuthenticationServer.Api.Controllers
     {
         private readonly ILogger<AuthController> _logger;
         private readonly UserManager<ApplicationUser> _userManager;
+        private readonly RoleManager<IdentityRole> _RoleManager;
         private readonly SignInManager<ApplicationUser> _signInManager;
         private readonly ITokenService _tokenService;
         public AuthController(ITokenService tokenService, UserManager<ApplicationUser> userManager,
-            SignInManager<ApplicationUser> signInManager, ILogger<AuthController> logger)
+            SignInManager<ApplicationUser> signInManager, ILogger<AuthController> logger, RoleManager<IdentityRole> roleManager)
         {
             _tokenService = tokenService;
             _signInManager = signInManager;
             _userManager = userManager;
             _logger = logger;
+            _RoleManager = roleManager;
         }
         // login
         [HttpPost("auth/login")]
@@ -86,6 +88,7 @@ namespace AuthenticationServer.Api.Controllers
                 // return the token
                 if (result.Succeeded)
                 {
+                    await _userManager.AddToRoleAsync(user, "Admin");
                     var tokens = await _tokenService.GenerateTokensAsync(user);
                     return Ok(new BaseResponse(true, new List<string> { "Success" }, new { access = tokens.accessToken, refresh = tokens.refreshToken }));
                 }

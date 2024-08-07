@@ -220,6 +220,108 @@ namespace gp_backend.EF.Migrations
                     b.ToTable("AspNetUsers", (string)null);
                 });
 
+            modelBuilder.Entity("gp_backend.Core.Models.Disease", b =>
+                {
+                    b.Property<int>("Id")
+                        .ValueGeneratedOnAdd()
+                        .HasColumnType("int");
+
+                    SqlServerPropertyBuilderExtensions.UseIdentityColumn(b.Property<int>("Id"));
+
+                    b.Property<string>("Description")
+                        .IsRequired()
+                        .HasColumnType("nvarchar(max)");
+
+                    b.Property<string>("Name")
+                        .IsRequired()
+                        .HasMaxLength(150)
+                        .HasColumnType("nvarchar(150)");
+
+                    b.Property<string>("Preventions")
+                        .IsRequired()
+                        .HasColumnType("nvarchar(max)");
+
+                    b.Property<string>("Risk")
+                        .IsRequired()
+                        .HasColumnType("nvarchar(max)");
+
+                    b.HasKey("Id");
+
+                    b.ToTable("Diseases");
+                });
+
+            modelBuilder.Entity("gp_backend.Core.Models.FeedBack", b =>
+                {
+                    b.Property<int>("Id")
+                        .ValueGeneratedOnAdd()
+                        .HasColumnType("int");
+
+                    SqlServerPropertyBuilderExtensions.UseIdentityColumn(b.Property<int>("Id"));
+
+                    b.Property<string>("ApplicationUserId")
+                        .IsRequired()
+                        .HasColumnType("nvarchar(450)");
+
+                    b.Property<string>("FeedBackContent")
+                        .IsRequired()
+                        .HasColumnType("nvarchar(max)");
+
+                    b.Property<bool>("IsRead")
+                        .HasColumnType("bit");
+
+                    b.Property<string>("Subject")
+                        .IsRequired()
+                        .HasColumnType("nvarchar(max)");
+
+                    b.HasKey("Id");
+
+                    b.HasIndex("ApplicationUserId");
+
+                    b.ToTable("FeedBacks");
+                });
+
+            modelBuilder.Entity("gp_backend.Core.Models.FileContent", b =>
+                {
+                    b.Property<int>("Id")
+                        .ValueGeneratedOnAdd()
+                        .HasColumnType("int");
+
+                    SqlServerPropertyBuilderExtensions.UseIdentityColumn(b.Property<int>("Id"));
+
+                    b.Property<byte[]>("Content")
+                        .IsRequired()
+                        .HasColumnType("varbinary(max)");
+
+                    b.Property<int>("FileDescriptionId")
+                        .HasColumnType("int");
+
+                    b.HasKey("Id");
+
+                    b.HasIndex("FileDescriptionId")
+                        .IsUnique();
+
+                    b.ToTable("FileContent");
+                });
+
+            modelBuilder.Entity("gp_backend.Core.Models.FileDescription", b =>
+                {
+                    b.Property<int>("Id")
+                        .ValueGeneratedOnAdd()
+                        .HasColumnType("int");
+
+                    SqlServerPropertyBuilderExtensions.UseIdentityColumn(b.Property<int>("Id"));
+
+                    b.Property<string>("ContentDisposition")
+                        .HasColumnType("nvarchar(max)");
+
+                    b.Property<string>("ContentType")
+                        .HasColumnType("nvarchar(max)");
+
+                    b.HasKey("Id");
+
+                    b.ToTable("Images");
+                });
+
             modelBuilder.Entity("gp_backend.Core.Models.RefreshToken", b =>
                 {
                     b.Property<int>("Id")
@@ -244,6 +346,48 @@ namespace gp_backend.EF.Migrations
                     b.HasIndex("UserId");
 
                     b.ToTable("RefreshTokens");
+                });
+
+            modelBuilder.Entity("gp_backend.Core.Models.Wound", b =>
+                {
+                    b.Property<int>("Id")
+                        .ValueGeneratedOnAdd()
+                        .HasColumnType("int");
+
+                    SqlServerPropertyBuilderExtensions.UseIdentityColumn(b.Property<int>("Id"));
+
+                    b.Property<string>("Advice")
+                        .HasColumnType("nvarchar(max)");
+
+                    b.Property<string>("ApplicationUserId")
+                        .IsRequired()
+                        .HasColumnType("nvarchar(450)");
+
+                    b.Property<int?>("DiseaseId")
+                        .HasColumnType("int");
+
+                    b.Property<int?>("ImageId")
+                        .HasColumnType("int");
+
+                    b.Property<string>("Location")
+                        .HasColumnType("nvarchar(max)");
+
+                    b.Property<string>("Type")
+                        .HasMaxLength(150)
+                        .HasColumnType("nvarchar(150)");
+
+                    b.Property<DateTime>("UploadDate")
+                        .HasColumnType("datetime2");
+
+                    b.HasKey("Id");
+
+                    b.HasIndex("ApplicationUserId");
+
+                    b.HasIndex("DiseaseId");
+
+                    b.HasIndex("ImageId");
+
+                    b.ToTable("Wounds");
                 });
 
             modelBuilder.Entity("Microsoft.AspNetCore.Identity.IdentityRoleClaim<string>", b =>
@@ -297,6 +441,28 @@ namespace gp_backend.EF.Migrations
                         .IsRequired();
                 });
 
+            modelBuilder.Entity("gp_backend.Core.Models.FeedBack", b =>
+                {
+                    b.HasOne("gp_backend.Core.Models.ApplicationUser", "User")
+                        .WithMany("FeedBacks")
+                        .HasForeignKey("ApplicationUserId")
+                        .OnDelete(DeleteBehavior.Cascade)
+                        .IsRequired();
+
+                    b.Navigation("User");
+                });
+
+            modelBuilder.Entity("gp_backend.Core.Models.FileContent", b =>
+                {
+                    b.HasOne("gp_backend.Core.Models.FileDescription", "FileDescription")
+                        .WithOne("Content")
+                        .HasForeignKey("gp_backend.Core.Models.FileContent", "FileDescriptionId")
+                        .OnDelete(DeleteBehavior.Cascade)
+                        .IsRequired();
+
+                    b.Navigation("FileDescription");
+                });
+
             modelBuilder.Entity("gp_backend.Core.Models.RefreshToken", b =>
                 {
                     b.HasOne("gp_backend.Core.Models.ApplicationUser", "User")
@@ -308,9 +474,41 @@ namespace gp_backend.EF.Migrations
                     b.Navigation("User");
                 });
 
+            modelBuilder.Entity("gp_backend.Core.Models.Wound", b =>
+                {
+                    b.HasOne("gp_backend.Core.Models.ApplicationUser", "User")
+                        .WithMany("Wounds")
+                        .HasForeignKey("ApplicationUserId")
+                        .OnDelete(DeleteBehavior.Cascade)
+                        .IsRequired();
+
+                    b.HasOne("gp_backend.Core.Models.Disease", "Disease")
+                        .WithMany()
+                        .HasForeignKey("DiseaseId");
+
+                    b.HasOne("gp_backend.Core.Models.FileDescription", "Image")
+                        .WithMany()
+                        .HasForeignKey("ImageId");
+
+                    b.Navigation("Disease");
+
+                    b.Navigation("Image");
+
+                    b.Navigation("User");
+                });
+
             modelBuilder.Entity("gp_backend.Core.Models.ApplicationUser", b =>
                 {
+                    b.Navigation("FeedBacks");
+
                     b.Navigation("RefreshTokens");
+
+                    b.Navigation("Wounds");
+                });
+
+            modelBuilder.Entity("gp_backend.Core.Models.FileDescription", b =>
+                {
+                    b.Navigation("Content");
                 });
 #pragma warning restore 612, 618
         }

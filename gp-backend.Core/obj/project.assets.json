@@ -821,11 +821,11 @@
   "project": {
     "version": "1.0.0",
     "restore": {
-      "projectUniqueName": "E:\\GP_Tasks\\GP-Backend\\gp-backend.Api\\gp-backend.Core\\gp-backend.Core.csproj",
+      "projectUniqueName": "C:\\gp-project\\gp-backend.Api\\gp-backend.Core\\gp-backend.Core.csproj",
       "projectName": "gp-backend.Core",
-      "projectPath": "E:\\GP_Tasks\\GP-Backend\\gp-backend.Api\\gp-backend.Core\\gp-backend.Core.csproj",
+      "projectPath": "C:\\gp-project\\gp-backend.Api\\gp-backend.Core\\gp-backend.Core.csproj",
       "packagesPath": "C:\\Users\\XPRISTO\\.nuget\\packages\\",
-      "outputPath": "E:\\GP_Tasks\\GP-Backend\\gp-backend.Api\\gp-backend.Core\\obj\\",
+      "outputPath": "C:\\gp-project\\gp-backend.Api\\gp-backend.Core\\obj\\",
       "projectStyle": "PackageReference",
       "fallbackFolders": [
         "C:\\Program Files (x86)\\Microsoft Visual Studio\\Shared\\NuGetPackages"

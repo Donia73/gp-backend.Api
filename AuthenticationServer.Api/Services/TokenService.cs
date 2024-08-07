@@ -49,16 +49,16 @@ namespace AuthenticationServer.Api.Services
             // user main info
             var claims = new List<Claim>
             {
-                new ("Id", user.Id.ToString()),
-                new ("UserName", user.UserName),
-                new ("Email", user.Email),
-                new ("TokenId", Guid.NewGuid().ToString())
+                new ("uid", user.Id.ToString()),
+                new (JwtRegisteredClaimNames.Sub, user.UserName),
+                new (JwtRegisteredClaimNames.Email, user.Email),
+                new (JwtRegisteredClaimNames.Jti, Guid.NewGuid().ToString())
             };
             // user roles
             var roles = await _userManager.GetRolesAsync(user);
             foreach (var role in roles)
             {
-                claims.Add(new Claim("Roles", role));
+                claims.Add(new Claim("roles", role));
             }
 
             // create the jwt token with the specified parameters

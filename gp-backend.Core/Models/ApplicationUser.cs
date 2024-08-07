@@ -5,5 +5,7 @@ namespace gp_backend.Core.Models
     public class ApplicationUser : IdentityUser
     {
         public List<RefreshToken>? RefreshTokens { get; set; } = new();
+        public List<Wound>? Wounds { get; set; } = [];
+        public List<FeedBack>? FeedBacks { get; set; } = [];
     }
 }

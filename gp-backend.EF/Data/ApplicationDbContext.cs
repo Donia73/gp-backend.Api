@@ -12,5 +12,9 @@ namespace gp_backend.EF.Data
                 
         }
         public virtual DbSet<RefreshToken> RefreshTokens { get; set; }
+        public virtual DbSet<Disease> Diseases { get; set; }
+        public virtual DbSet<FileDescription> Images { get; set; }
+        public virtual DbSet<Wound> Wounds { get; set; }
+        public virtual DbSet<FeedBack> FeedBacks { get; set; }
     }
 }
