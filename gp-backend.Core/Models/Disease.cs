@@ -9,6 +9,7 @@ namespace gp_backend.Core.Models
         public string Name { get; set; }
         public string Description { get; set; }
         public string Risk { get; set; }
-        public List<string> Preventions { get; set; }
+        public List<string> Preventions { get; set; } = [];
+        public List<Specialization>? Specialization { get; set; } = [];
     }
 }

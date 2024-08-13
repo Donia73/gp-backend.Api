@@ -16,5 +16,6 @@ namespace gp_backend.EF.Data
         public virtual DbSet<FileDescription> Images { get; set; }
         public virtual DbSet<Wound> Wounds { get; set; }
         public virtual DbSet<FeedBack> FeedBacks { get; set; }
+        public virtual DbSet<Specialization> Specializations { get; set; }
     }
 }

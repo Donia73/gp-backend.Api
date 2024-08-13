@@ -15,17 +15,20 @@ namespace gp_backend.Api.Controllers
     public class DiseaseController : ControllerBase
     {
         private readonly IGenericRepo<Disease> _diseaseRepo;
+        private readonly ISpecialRepo _specialRepo;
         private readonly ILogger<DiseaseController> _logger;
-        public DiseaseController(IGenericRepo<Disease> diseaseRepo, ILogger<DiseaseController> logger,
-        UserManager<ApplicationUser> userManager)
+        public DiseaseController(IGenericRepo<Disease> diseaseRepo, ISpecialRepo specialRepo, ILogger<DiseaseController> logger)
         {
             _diseaseRepo = diseaseRepo;
+            _specialRepo = specialRepo;
             _logger = logger;
         }
 
         // Add
+        // - first get the specialization
+        // if it does not exist the program won't add the disease
         [Authorize(Roles = "Admin")]
-        [HttpPost]
+        [HttpPost("add")]
         public async Task<IActionResult> Add(AddDiseaseDto model)
         {
             // check the properties validation
@@ -34,22 +37,37 @@ namespace gp_backend.Api.Controllers
                 return BadRequest(new BaseResponse(state: false, message: ModelState.Values.SelectMany(v => v.Errors)
                     .Select(e => e.ErrorMessage).ToList(), null));
             }
+
+            // check the specialization id
+            if(model.SpecializationId <= 0)
+            {
+                return BadRequest(new BaseResponse(state: false, message: new List<string> { "Invalid specialization."}, null));
+            }
+
+
+            
+            var special = await _specialRepo.GetByIdAsync(model.SpecializationId);
+            if (special == null) {
+                return BadRequest(new BaseResponse(state: false, message: new List<string> { "Invalid specialization." }, null));
+            }
+
             var result = new Disease {
                 Description = model.Description,
                 Name = model.Name,
                 Preventions = model.Preventions,
                 Risk = model.Risk
             };
-            var resultadd = await _diseaseRepo.InsertAsync(result);
-            await _diseaseRepo.SaveAsync();
+
+            special.Diseases.Add(result);
+            await _specialRepo.SaveAsync();
 
             return Ok(new BaseResponse(true, new List<string> { "Success" }, new GetDiseaseDetailsDto
             {
-                Id = resultadd.Id,
-                Description = resultadd.Description,
-                Name = resultadd.Name,
-                Preventions = resultadd.Preventions,
-                Risk = resultadd.Risk
+                Id = result.Id,
+                Description = result.Description,
+                Name = result.Name,
+                Preventions = result.Preventions,
+                Risk = result.Risk
             }));
         }
 

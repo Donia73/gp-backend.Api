@@ -9,5 +9,6 @@ namespace gp_backend.Api.Dtos.Disease
         public string Description { get; set; }
         public string Risk { get; set; }
         public List<string> Preventions { get; set; }
+        public int SpecializationId { get; set; }
     }
 }

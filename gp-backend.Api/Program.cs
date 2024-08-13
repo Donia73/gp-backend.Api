@@ -50,6 +50,7 @@ builder.Services.AddAuthorization();
 builder.Services.AddScoped<IGenericRepo<Wound>, WoundRepo>();
 builder.Services.AddScoped<IGenericRepo<Disease>, DiseaseRepo>();
 builder.Services.AddScoped<IFeedBackRepo, FeedBackRepo>();
+builder.Services.AddScoped<ISpecialRepo, SpecialRepo>();
 builder.Services.AddLogging();
 
 var app = builder.Build();
