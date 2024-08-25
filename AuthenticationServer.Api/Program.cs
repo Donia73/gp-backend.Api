@@ -3,12 +3,13 @@
 using AuthenticationServer.Api.Services.Interfaces;
 using AuthenticationServer.Api.Services;
 using gp_backend.Core.Models;
-using gp_backend.EF.Data;
 using Microsoft.AspNetCore.Authentication.JwtBearer;
 using Microsoft.AspNetCore.Identity;
 using Microsoft.EntityFrameworkCore;
 using Microsoft.IdentityModel.Tokens;
 using System.Text;
+using gp_backend.EF.MSSql.Data;
+using gp_backend.EF.MySql.Data;
 
 var builder = WebApplication.CreateBuilder(args);
 
@@ -19,11 +20,15 @@ builder.Services.AddEndpointsApiExplorer();
 builder.Services.AddSwaggerGen();
 
 // Configure EF & Identity
-builder.Services.AddDbContext<ApplicationDbContext>(options =>
-    options.UseSqlServer(builder.Configuration.GetConnectionString("Default")));
+//builder.Services.AddDbContext<ApplicationDbContext>(options =>
+//    options.UseSqlServer(builder.Configuration.GetConnectionString("Default")));
+
+builder.Services.AddDbContext<MySqlDbContext>(options =>
+    options.UseMySql(builder.Configuration.GetConnectionString("mysql-db"), new MySqlServerVersion(new Version(8, 0, 23)))
+);
 
 builder.Services.AddIdentity<ApplicationUser, IdentityRole>()
-            .AddEntityFrameworkStores<ApplicationDbContext>()
+            .AddEntityFrameworkStores<MySqlDbContext>()
             .AddDefaultTokenProviders();
 
 

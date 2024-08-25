@@ -1,13 +1,12 @@
 ﻿using gp_backend.Api.Dtos;
 using gp_backend.Api.Dtos.Disease;
 using gp_backend.Api.Dtos.FeedBack;
-using gp_backend.Api.Repositories.Interfaces;
+using gp_backend.EF.MySql.Repositories.Interfaces;
 using gp_backend.Core.Models;
 using Microsoft.AspNetCore.Authorization;
 using Microsoft.AspNetCore.Http;
 using Microsoft.AspNetCore.Identity;
 using Microsoft.AspNetCore.Mvc;
-using Microsoft.EntityFrameworkCore.Metadata.Internal;
 
 namespace gp_backend.Api.Controllers
 {

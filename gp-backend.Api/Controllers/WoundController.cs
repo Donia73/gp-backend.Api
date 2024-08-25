@@ -1,5 +1,5 @@
 ﻿using gp_backend.Api.Dtos;
-using gp_backend.Api.Repositories.Interfaces;
+using gp_backend.EF.MySql.Repositories.Interfaces;
 using gp_backend.Core.Models;
 using Microsoft.AspNetCore.Authorization;
 using Microsoft.AspNetCore.Http;

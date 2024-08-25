@@ -1,8 +1,7 @@
 ﻿using gp_backend.Api.Dtos;
 using gp_backend.Api.Dtos.Disease;
 using gp_backend.Api.Dtos.Special;
-using gp_backend.Api.Repositories;
-using gp_backend.Api.Repositories.Interfaces;
+using gp_backend.EF.MySql.Repositories.Interfaces;
 using gp_backend.Core.Models;
 using Microsoft.AspNetCore.Authorization;
 using Microsoft.AspNetCore.Http;
