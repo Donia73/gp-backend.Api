@@ -2,18 +2,22 @@
 FROM mcr.microsoft.com/dotnet/sdk:8.0 AS build
 WORKDIR /src
 
-# Copy the solution file and restore any dependencies
+# Copy solution file and project files
 COPY *.sln ./
-COPY gp-bakcend.Api/*.csproj ./gp-bakcend.Api/
+COPY AuthenticationServer.Api/AuthenticationServer.Api.csproj ./AuthenticationServer.Api/
+COPY gp-backend.Api/gp-backend.Api.csproj ./gp-backend.Api/
+COPY gp-backend.EF/gp-backend.EF.csproj ./gp-backend.EF/
+COPY gp-backend.Core/gp-backend.Core.csproj ./gp-backend.Core/
 
+# Restore dependencies
 RUN dotnet restore
 
-# Copy the remaining source code and build the project
+# Copy the rest of the source code
 COPY . .
-WORKDIR /src/gp-bakcend.Api
-RUN dotnet build -c Release -o /app/build
 
-# Publish the application
+# Build and publish the application
+WORKDIR /src/authentication.api
+RUN dotnet build -c Release -o /app/build
 RUN dotnet publish -c Release -o /app/publish /p:UseAppHost=false
 
 # Stage 2: Create the runtime image
@@ -24,4 +28,4 @@ WORKDIR /app
 COPY --from=build /app/publish .
 
 # Set the entry point for the application
-ENTRYPOINT ["dotnet", "gp-bakcend.Api.dll"]
+ENTRYPOINT ["dotnet", "gp-backend.Api.dll"]
