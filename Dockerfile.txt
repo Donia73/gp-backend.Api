@@ -3,14 +3,14 @@ FROM mcr.microsoft.com/dotnet/sdk:8.0 AS build
 WORKDIR /src
 
 # Copy the solution file and projects
-COPY ["YourSolution.sln", "./"]
+COPY ["gp-backend.Api.sln", "./"]
 COPY ["AuthenticationServer.Api/AuthenticationServer.Api.csproj", "AuthenticationServer.Api/"]
 COPY ["gp-backend.Api/gp-backend.Api.csproj", "gp-backend.Api/"]
 COPY ["gp-backend.EF/gp-backend.EF.csproj", "gp-backend.EF/"]
 COPY ["gp-backend.Core/gp-backend.Core.csproj", "gp-backend.Core/"]
 
 # Restore dependencies
-RUN dotnet restore "YourSolution.sln"
+RUN dotnet restore "gp-backend.Api.sln"
 
 # Copy the rest of the files and build the projects
 COPY . .
@@ -34,4 +34,4 @@ ENV ASPNETCORE_URLS=http://+:80
 ENV ASPNETCORE_ENVIRONMENT=Production
 
 # Run the application
-ENTRYPOINT ["dotnet", "AuthenticationServer.Api.dll"]
+ENTRYPOINT ["dotnet", "gp-backend.Api.dll"]
