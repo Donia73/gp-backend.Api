@@ -10,6 +10,7 @@ COPY ["gp-backend.EF/gp-backend.EF.csproj", "gp-backend.EF/"]
 COPY ["gp-backend.Core/gp-backend.Core.csproj", "gp-backend.Core/"]
 
 # Restore dependencies
+RUN dotnet --version  # Optional: Check the SDK version for debugging
 RUN dotnet restore "gp-backend.Api.sln"
 
 # Copy the rest of the files and build the projects
