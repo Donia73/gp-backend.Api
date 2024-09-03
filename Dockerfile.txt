@@ -2,9 +2,6 @@
 FROM mcr.microsoft.com/dotnet/sdk:8.0 AS build-env
 WORKDIR /app
 
-# Set the SDK version environment variable
-ENV NIXPACKS_CSHARP_SDK_VERSION=8.0
-
 # Copy the .csproj files and restore as distinct layers
 COPY ./AuthenticationServer.Api/AuthenticationServer.Api.csproj ./AuthenticationServer.Api/
 COPY ./gp-backend.Api/gp-backend.Api.csproj ./gp-backend.Api/
@@ -13,11 +10,15 @@ COPY ./gp-backend.EF/gp-backend.EF.csproj ./gp-backend.EF/
 
 RUN dotnet restore ./AuthenticationServer.Api/AuthenticationServer.Api.csproj
 RUN dotnet restore ./gp-backend.Api/gp-backend.Api.csproj
+RUN dotnet restore ./gp-backend.Core/gp-backend.Core.csproj
+RUN dotnet restore ./gp-backend.EF/gp-backend.EF.csproj
 
 # Copy the remaining files and build
 COPY . ./
 RUN dotnet publish ./AuthenticationServer.Api/AuthenticationServer.Api.csproj -c Release -o /app/publish
 RUN dotnet publish ./gp-backend.Api/gp-backend.Api.csproj -c Release -o /app/publish
+RUN dotnet publish ./gp-backend.Core/gp-backend.Core.csproj -c Release -o /app/publish
+RUN dotnet publish ./gp-backend.EF/gp-backend.EF.csproj -c Release -o /app/publish
 
 # Stage 2: Build the runtime image
 FROM mcr.microsoft.com/dotnet/aspnet:8.0 AS runtime
