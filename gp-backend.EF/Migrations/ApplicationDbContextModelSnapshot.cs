@@ -3,7 +3,6 @@ using System;
 using Microsoft.EntityFrameworkCore;
 using Microsoft.EntityFrameworkCore.Infrastructure;
 using Microsoft.EntityFrameworkCore.Metadata;
-using Microsoft.EntityFrameworkCore.Migrations;
 using Microsoft.EntityFrameworkCore.Storage.ValueConversion;
 using gp_backend.EF.MSSql.Data;
 
@@ -12,11 +11,9 @@ using gp_backend.EF.MSSql.Data;
 namespace gp_backend.EF.Migrations
 {
     [DbContext(typeof(ApplicationDbContext))]
-    [Migration("20240806100229_AddFeedBackTable")]
-    partial class AddFeedBackTable
+    partial class ApplicationDbContextModelSnapshot : ModelSnapshot
     {
-        /// <inheritdoc />
-        protected override void BuildTargetModel(ModelBuilder modelBuilder)
+        protected override void BuildModel(ModelBuilder modelBuilder)
         {
 #pragma warning disable 612, 618
             modelBuilder
@@ -24,6 +21,36 @@ namespace gp_backend.EF.Migrations
                 .HasAnnotation("Relational:MaxIdentifierLength", 128);
 
             SqlServerModelBuilderExtensions.UseIdentityColumns(modelBuilder);
+
+            modelBuilder.Entity("ApplicationUserSpecialization", b =>
+                {
+                    b.Property<string>("ApplicationUsersId")
+                        .HasColumnType("nvarchar(450)");
+
+                    b.Property<int>("SpecializationsId")
+                        .HasColumnType("int");
+
+                    b.HasKey("ApplicationUsersId", "SpecializationsId");
+
+                    b.HasIndex("SpecializationsId");
+
+                    b.ToTable("ApplicationUserSpecialization");
+                });
+
+            modelBuilder.Entity("DiseaseSpecialization", b =>
+                {
+                    b.Property<int>("DiseasesId")
+                        .HasColumnType("int");
+
+                    b.Property<int>("SpecializationId")
+                        .HasColumnType("int");
+
+                    b.HasKey("DiseasesId", "SpecializationId");
+
+                    b.HasIndex("SpecializationId");
+
+                    b.ToTable("DiseaseSpecialization");
+                });
 
             modelBuilder.Entity("Microsoft.AspNetCore.Identity.IdentityRole", b =>
                 {
@@ -50,6 +77,14 @@ namespace gp_backend.EF.Migrations
                         .HasFilter("[NormalizedName] IS NOT NULL");
 
                     b.ToTable("AspNetRoles", (string)null);
+
+                    b.HasData(
+                        new
+                        {
+                            Id = "cbcc5d1f-572b-44ea-bfe2-dfa5d0d1bc8f",
+                            Name = "Admin",
+                            NormalizedName = "ADMIN"
+                        });
                 });
 
             modelBuilder.Entity("Microsoft.AspNetCore.Identity.IdentityRoleClaim<string>", b =>
@@ -137,6 +172,13 @@ namespace gp_backend.EF.Migrations
                     b.HasIndex("RoleId");
 
                     b.ToTable("AspNetUserRoles", (string)null);
+
+                    b.HasData(
+                        new
+                        {
+                            UserId = "71c7d19b-93ef-42de-a43c-7a2178dd6d48",
+                            RoleId = "cbcc5d1f-572b-44ea-bfe2-dfa5d0d1bc8f"
+                        });
                 });
 
             modelBuilder.Entity("Microsoft.AspNetCore.Identity.IdentityUserToken<string>", b =>
@@ -221,6 +263,24 @@ namespace gp_backend.EF.Migrations
                         .HasFilter("[NormalizedUserName] IS NOT NULL");
 
                     b.ToTable("AspNetUsers", (string)null);
+
+                    b.HasData(
+                        new
+                        {
+                            Id = "71c7d19b-93ef-42de-a43c-7a2178dd6d48",
+                            AccessFailedCount = 0,
+                            ConcurrencyStamp = "d70abbb9-99ed-4d83-9000-2adbebc40646",
+                            Email = "admin@admin.com",
+                            EmailConfirmed = true,
+                            LockoutEnabled = false,
+                            NormalizedEmail = "ADMIN@ADMIN.COM",
+                            NormalizedUserName = "ADMIN",
+                            PasswordHash = "AQAAAAIAAYagAAAAEA50ThGPrTy7geQNg+QU3jDJQj5l2fxagG8ZiNIkCflUD2hPwKWjkzSEkWq4h8eTxA==",
+                            PhoneNumberConfirmed = false,
+                            SecurityStamp = "b7299021-6791-4426-a5fe-092823e454a2",
+                            TwoFactorEnabled = false,
+                            UserName = "admin"
+                        });
                 });
 
             modelBuilder.Entity("gp_backend.Core.Models.Disease", b =>
@@ -268,6 +328,9 @@ namespace gp_backend.EF.Migrations
                     b.Property<string>("FeedBackContent")
                         .IsRequired()
                         .HasColumnType("nvarchar(max)");
+
+                    b.Property<bool>("IsRead")
+                        .HasColumnType("bit");
 
                     b.Property<string>("Subject")
                         .IsRequired()
@@ -348,6 +411,27 @@ namespace gp_backend.EF.Migrations
                     b.ToTable("RefreshTokens");
                 });
 
+            modelBuilder.Entity("gp_backend.Core.Models.Specialization", b =>
+                {
+                    b.Property<int>("Id")
+                        .ValueGeneratedOnAdd()
+                        .HasColumnType("int");
+
+                    SqlServerPropertyBuilderExtensions.UseIdentityColumn(b.Property<int>("Id"));
+
+                    b.Property<string>("Name")
+                        .IsRequired()
+                        .HasMaxLength(150)
+                        .HasColumnType("nvarchar(150)");
+
+                    b.Property<int>("Years")
+                        .HasColumnType("int");
+
+                    b.HasKey("Id");
+
+                    b.ToTable("Specializations");
+                });
+
             modelBuilder.Entity("gp_backend.Core.Models.Wound", b =>
                 {
                     b.Property<int>("Id")
@@ -388,6 +472,36 @@ namespace gp_backend.EF.Migrations
                     b.HasIndex("ImageId");
 
                     b.ToTable("Wounds");
+                });
+
+            modelBuilder.Entity("ApplicationUserSpecialization", b =>
+                {
+                    b.HasOne("gp_backend.Core.Models.ApplicationUser", null)
+                        .WithMany()
+                        .HasForeignKey("ApplicationUsersId")
+                        .OnDelete(DeleteBehavior.Cascade)
+                        .IsRequired();
+
+                    b.HasOne("gp_backend.Core.Models.Specialization", null)
+                        .WithMany()
+                        .HasForeignKey("SpecializationsId")
+                        .OnDelete(DeleteBehavior.Cascade)
+                        .IsRequired();
+                });
+
+            modelBuilder.Entity("DiseaseSpecialization", b =>
+                {
+                    b.HasOne("gp_backend.Core.Models.Disease", null)
+                        .WithMany()
+                        .HasForeignKey("DiseasesId")
+                        .OnDelete(DeleteBehavior.Cascade)
+                        .IsRequired();
+
+                    b.HasOne("gp_backend.Core.Models.Specialization", null)
+                        .WithMany()
+                        .HasForeignKey("SpecializationId")
+                        .OnDelete(DeleteBehavior.Cascade)
+                        .IsRequired();
                 });
 
             modelBuilder.Entity("Microsoft.AspNetCore.Identity.IdentityRoleClaim<string>", b =>

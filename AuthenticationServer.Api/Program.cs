@@ -8,7 +8,7 @@ using Microsoft.AspNetCore.Identity;
 using Microsoft.EntityFrameworkCore;
 using Microsoft.IdentityModel.Tokens;
 using System.Text;
-using gp_backend.EF.MSSql.Data;
+//using gp_backend.EF.MSSql.Data;
 using gp_backend.EF.MySql.Data;
 
 var builder = WebApplication.CreateBuilder(args);
@@ -30,6 +30,9 @@ builder.Services.AddDbContext<MySqlDbContext>(options =>
 builder.Services.AddIdentity<ApplicationUser, IdentityRole>()
             .AddEntityFrameworkStores<MySqlDbContext>()
             .AddDefaultTokenProviders();
+//builder.Services.AddIdentity<ApplicationUser, IdentityRole>()
+//            .AddEntityFrameworkStores<ApplicationDbContext>()
+//            .AddDefaultTokenProviders();
 
 
 builder.Services.AddAuthentication(options =>

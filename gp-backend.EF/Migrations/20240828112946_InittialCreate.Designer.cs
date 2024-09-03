@@ -3,6 +3,7 @@ using System;
 using Microsoft.EntityFrameworkCore;
 using Microsoft.EntityFrameworkCore.Infrastructure;
 using Microsoft.EntityFrameworkCore.Metadata;
+using Microsoft.EntityFrameworkCore.Migrations;
 using Microsoft.EntityFrameworkCore.Storage.ValueConversion;
 using gp_backend.EF.MSSql.Data;
 
@@ -11,9 +12,11 @@ using gp_backend.EF.MSSql.Data;
 namespace gp_backend.EF.Migrations
 {
     [DbContext(typeof(ApplicationDbContext))]
-    partial class ApplicationDbContextModelSnapshot : ModelSnapshot
+    [Migration("20240828112946_InittialCreate")]
+    partial class InittialCreate
     {
-        protected override void BuildModel(ModelBuilder modelBuilder)
+        /// <inheritdoc />
+        protected override void BuildTargetModel(ModelBuilder modelBuilder)
         {
 #pragma warning disable 612, 618
             modelBuilder
@@ -34,7 +37,7 @@ namespace gp_backend.EF.Migrations
 
                     b.HasIndex("SpecializationsId");
 
-                    b.ToTable("ApplicationUserSpecialization", (string)null);
+                    b.ToTable("ApplicationUserSpecialization");
                 });
 
             modelBuilder.Entity("DiseaseSpecialization", b =>
@@ -49,7 +52,7 @@ namespace gp_backend.EF.Migrations
 
                     b.HasIndex("SpecializationId");
 
-                    b.ToTable("DiseaseSpecialization", (string)null);
+                    b.ToTable("DiseaseSpecialization");
                 });
 
             modelBuilder.Entity("Microsoft.AspNetCore.Identity.IdentityRole", b =>
@@ -77,6 +80,14 @@ namespace gp_backend.EF.Migrations
                         .HasFilter("[NormalizedName] IS NOT NULL");
 
                     b.ToTable("AspNetRoles", (string)null);
+
+                    b.HasData(
+                        new
+                        {
+                            Id = "cbcc5d1f-572b-44ea-bfe2-dfa5d0d1bc8f",
+                            Name = "Admin",
+                            NormalizedName = "ADMIN"
+                        });
                 });
 
             modelBuilder.Entity("Microsoft.AspNetCore.Identity.IdentityRoleClaim<string>", b =>
@@ -164,6 +175,13 @@ namespace gp_backend.EF.Migrations
                     b.HasIndex("RoleId");
 
                     b.ToTable("AspNetUserRoles", (string)null);
+
+                    b.HasData(
+                        new
+                        {
+                            UserId = "71c7d19b-93ef-42de-a43c-7a2178dd6d48",
+                            RoleId = "cbcc5d1f-572b-44ea-bfe2-dfa5d0d1bc8f"
+                        });
                 });
 
             modelBuilder.Entity("Microsoft.AspNetCore.Identity.IdentityUserToken<string>", b =>
@@ -248,6 +266,24 @@ namespace gp_backend.EF.Migrations
                         .HasFilter("[NormalizedUserName] IS NOT NULL");
 
                     b.ToTable("AspNetUsers", (string)null);
+
+                    b.HasData(
+                        new
+                        {
+                            Id = "71c7d19b-93ef-42de-a43c-7a2178dd6d48",
+                            AccessFailedCount = 0,
+                            ConcurrencyStamp = "d70abbb9-99ed-4d83-9000-2adbebc40646",
+                            Email = "admin@admin.com",
+                            EmailConfirmed = true,
+                            LockoutEnabled = false,
+                            NormalizedEmail = "ADMIN@ADMIN.COM",
+                            NormalizedUserName = "ADMIN",
+                            PasswordHash = "AQAAAAIAAYagAAAAEA50ThGPrTy7geQNg+QU3jDJQj5l2fxagG8ZiNIkCflUD2hPwKWjkzSEkWq4h8eTxA==",
+                            PhoneNumberConfirmed = false,
+                            SecurityStamp = "b7299021-6791-4426-a5fe-092823e454a2",
+                            TwoFactorEnabled = false,
+                            UserName = "admin"
+                        });
                 });
 
             modelBuilder.Entity("gp_backend.Core.Models.Disease", b =>
@@ -277,7 +313,7 @@ namespace gp_backend.EF.Migrations
 
                     b.HasKey("Id");
 
-                    b.ToTable("Diseases", (string)null);
+                    b.ToTable("Diseases");
                 });
 
             modelBuilder.Entity("gp_backend.Core.Models.FeedBack", b =>
@@ -307,7 +343,7 @@ namespace gp_backend.EF.Migrations
 
                     b.HasIndex("ApplicationUserId");
 
-                    b.ToTable("FeedBacks", (string)null);
+                    b.ToTable("FeedBacks");
                 });
 
             modelBuilder.Entity("gp_backend.Core.Models.FileContent", b =>
@@ -330,7 +366,7 @@ namespace gp_backend.EF.Migrations
                     b.HasIndex("FileDescriptionId")
                         .IsUnique();
 
-                    b.ToTable("FileContent", (string)null);
+                    b.ToTable("FileContent");
                 });
 
             modelBuilder.Entity("gp_backend.Core.Models.FileDescription", b =>
@@ -349,7 +385,7 @@ namespace gp_backend.EF.Migrations
 
                     b.HasKey("Id");
 
-                    b.ToTable("Images", (string)null);
+                    b.ToTable("Images");
                 });
 
             modelBuilder.Entity("gp_backend.Core.Models.RefreshToken", b =>
@@ -375,7 +411,7 @@ namespace gp_backend.EF.Migrations
 
                     b.HasIndex("UserId");
 
-                    b.ToTable("RefreshTokens", (string)null);
+                    b.ToTable("RefreshTokens");
                 });
 
             modelBuilder.Entity("gp_backend.Core.Models.Specialization", b =>
@@ -396,7 +432,7 @@ namespace gp_backend.EF.Migrations
 
                     b.HasKey("Id");
 
-                    b.ToTable("Specializations", (string)null);
+                    b.ToTable("Specializations");
                 });
 
             modelBuilder.Entity("gp_backend.Core.Models.Wound", b =>
@@ -438,7 +474,7 @@ namespace gp_backend.EF.Migrations
 
                     b.HasIndex("ImageId");
 
-                    b.ToTable("Wounds", (string)null);
+                    b.ToTable("Wounds");
                 });
 
             modelBuilder.Entity("ApplicationUserSpecialization", b =>
