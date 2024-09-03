@@ -13,17 +13,17 @@ RUN dotnet restore ./gp-backend.Api/gp-backend.Api.csproj
 RUN dotnet restore ./gp-backend.Core/gp-backend.Core.csproj
 RUN dotnet restore ./gp-backend.EF/gp-backend.EF.csproj
 
-# Copy the rest of the application code and build
+# Copy the rest of the application code and build each project
 COPY . ./
-RUN dotnet publish ./AuthenticationServer.Api/AuthenticationServer.Api.csproj -c Release -o /app/publish
-RUN dotnet publish ./gp-backend.Api/gp-backend.Api.csproj -c Release -o /app/publish
-RUN dotnet publish ./gp-backend.Core/gp-backend.Core.csproj -c Release -o /app/publish
-RUN dotnet publish ./gp-backend.EF/gp-backend.EF.csproj -c Release -o /app/publish
+RUN dotnet publish ./AuthenticationServer.Api/AuthenticationServer.Api.csproj -c Release -o /app/publish/authserver
+RUN dotnet publish ./gp-backend.Api/gp-backend.Api.csproj -c Release -o /app/publish/gpbackendapi
+RUN dotnet publish ./gp-backend.Core/gp-backend.Core.csproj -c Release -o /app/publish/gpbackendcore
+RUN dotnet publish ./gp-backend.EF/gp-backend.EF.csproj -c Release -o /app/publish/gpbackendef
 
 # Use the ASP.NET runtime image for the final stage
 FROM mcr.microsoft.com/dotnet/aspnet:8.0 AS runtime
 WORKDIR /app
-COPY --from=build-env /app/publish .
+COPY --from=build-env /app/publish/gpbackendapi .
 
 ENTRYPOINT ["dotnet", "gp-backend.Api.dll"]
 EXPOSE 80
