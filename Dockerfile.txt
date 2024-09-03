@@ -1,8 +1,8 @@
-# Stage 1: Build the projects
+# Use a stable .NET SDK image
 FROM mcr.microsoft.com/dotnet/sdk:8.0 AS build-env
 WORKDIR /app
 
-# Copy the .csproj files and restore as distinct layers
+# Copy project files and restore dependencies
 COPY ./AuthenticationServer.Api/AuthenticationServer.Api.csproj ./AuthenticationServer.Api/
 COPY ./gp-backend.Api/gp-backend.Api.csproj ./gp-backend.Api/
 COPY ./gp-backend.Core/gp-backend.Core.csproj ./gp-backend.Core/
@@ -13,20 +13,17 @@ RUN dotnet restore ./gp-backend.Api/gp-backend.Api.csproj
 RUN dotnet restore ./gp-backend.Core/gp-backend.Core.csproj
 RUN dotnet restore ./gp-backend.EF/gp-backend.EF.csproj
 
-# Copy the remaining files and build
+# Copy the rest of the application code and build
 COPY . ./
 RUN dotnet publish ./AuthenticationServer.Api/AuthenticationServer.Api.csproj -c Release -o /app/publish
 RUN dotnet publish ./gp-backend.Api/gp-backend.Api.csproj -c Release -o /app/publish
 RUN dotnet publish ./gp-backend.Core/gp-backend.Core.csproj -c Release -o /app/publish
 RUN dotnet publish ./gp-backend.EF/gp-backend.EF.csproj -c Release -o /app/publish
 
-# Stage 2: Build the runtime image
+# Use the ASP.NET runtime image for the final stage
 FROM mcr.microsoft.com/dotnet/aspnet:8.0 AS runtime
 WORKDIR /app
 COPY --from=build-env /app/publish .
 
-# Set the startup command for the Docker container
 ENTRYPOINT ["dotnet", "gp-backend.Api.dll"]
-
-# Expose the port that the WebAPI will listen on
 EXPOSE 80
