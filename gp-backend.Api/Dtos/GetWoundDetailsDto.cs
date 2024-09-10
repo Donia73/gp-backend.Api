@@ -10,9 +10,8 @@ namespace gp_backend.Api.Dtos
         public string Name { get; set; }
         public string Description { get; set; }
         public List<string> Preventions { get; set; }
-        public byte[] Image { get; set; }
+        public string? Image { get; set; }
         public DateTime UploadDate { get; set; }
-        public string? Advice { get; set; }
         public string Risk { get; set; }
     }
 }
