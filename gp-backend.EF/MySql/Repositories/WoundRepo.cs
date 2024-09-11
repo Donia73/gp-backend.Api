@@ -25,7 +25,7 @@ namespace gp_backend.EF.MySql.Repositories
         }
         public async Task<List<Wound>> GetAllAsync(string userId)
         {
-            return _context.Wounds.Include(x => x.Disease).Include(x => x.Image).Where(x => x.ApplicationUserId == userId).ToList();
+            return _context.Wounds.Include(x => x.Disease).Include(x => x.Image).ThenInclude(x => x.Content).Where(x => x.ApplicationUserId == userId).ToList();
         }
 
         public async Task<Wound> GetByIdAsync(int id)

@@ -109,7 +109,7 @@ namespace gp_backend.Api.Controllers
                 resultList.Add(new GetWoundDto
                 {
                     Id = wound.Id,
-                    file = Convert.ToBase64String( wound.Image.Content.Content),
+                    file = Convert.ToBase64String( wound?.Image?.Content?.Content),
                     Type = wound.Type,
                     Location = wound.Location,
                     AddedDate = wound.UploadDate
