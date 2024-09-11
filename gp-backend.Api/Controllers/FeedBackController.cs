@@ -58,7 +58,7 @@ namespace gp_backend.Api.Controllers
                     FeedBackContent = feedback.FeedBackContent
                 }));
             }
-            return BadRequest(new { User = user });
+            return BadRequest(new { User = uid });
         }
 
         [HttpGet("get-by-id")]
