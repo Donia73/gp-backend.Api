@@ -111,7 +111,7 @@ namespace gp_backend.Api.Controllers
                     Id = wound.Id,
                     file = Convert.ToBase64String( wound?.Image?.Content?.Content),
                     Type = wound.Type,
-                    Location = wound.Location,
+                    Name = wound.Disease.Name,
                     AddedDate = wound.UploadDate
                 });
             }
