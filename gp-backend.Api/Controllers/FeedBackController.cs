@@ -27,7 +27,7 @@ namespace gp_backend.Api.Controllers
             _userManager = userManager;
         }
         [HttpPost("add")]
-        public async Task<IActionResult> Add([FromForm] AddFeedBackDto model)
+        public async Task<IActionResult> Add([FromBody] AddFeedBackDto model)
         {
             // check the properties validation
             if (!ModelState.IsValid)
