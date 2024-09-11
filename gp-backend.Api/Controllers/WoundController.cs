@@ -112,7 +112,7 @@ namespace gp_backend.Api.Controllers
                     file = Convert.ToBase64String( wound?.Image?.Content?.Content),
                     Type = wound.Type,
                     Name = wound.Disease.Name,
-                    AddedDate = wound.UploadDate.Date
+                    AddedDate = wound.UploadDate.ToShortDateString(),
                 });
             }
             if(resultList.Count > 0)

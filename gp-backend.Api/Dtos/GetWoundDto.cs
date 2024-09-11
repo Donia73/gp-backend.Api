@@ -8,6 +8,6 @@ namespace gp_backend.Api.Dtos
         public string Name { get; set; }
         public string? file { get; set; }
         public string Type { get; set; }
-        public DateTime AddedDate { get; set; }
+        public string AddedDate { get; set; }
     }
 }
