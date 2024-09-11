@@ -100,8 +100,8 @@ namespace gp_backend.Api.Controllers
         [HttpGet("get-all")]
         public async Task<IActionResult> GetAll()
         {
-            var user = await _userManager.GetUserAsync(User);
-            var wounds = await _woundRepo.GetAllAsync(user.Id);
+            var uid = User.Claims.FirstOrDefault(x => x.Type == "uid").Value;
+            var wounds = await _woundRepo.GetAllAsync(uid);
 
             var resultList = new List<GetWoundDto>();
             foreach(var wound in wounds)
