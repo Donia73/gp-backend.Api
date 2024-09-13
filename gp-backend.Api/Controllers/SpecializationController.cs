@@ -103,7 +103,7 @@ namespace gp_backend.Api.Controllers
             {
                 doctors.Add(new GetDoctorsDto { Id = doc.Id, Email = doc.Email, Name = doc.FullName, PhoneNumber = doc.PhoneNumber });
             }
-            return Ok(doctors);
+            return Ok(new BaseResponse(true,new List<string>{ "Success" }, doctors));
         }
         [AllowAnonymous]
         [HttpGet("get-doc")]
