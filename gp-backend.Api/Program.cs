@@ -34,7 +34,10 @@ builder.Services.AddDbContext<MySqlDbContext>(options =>
 //        .AddEntityFrameworkStores<ApplicationDbContext>()
 //        .AddDefaultTokenProviders();
 
-builder.Services.AddIdentity<ApplicationUser, IdentityRole>()
+builder.Services.AddIdentity<ApplicationUser, IdentityRole>(options =>
+{
+    options.User.RequireUniqueEmail = true;
+})
         .AddEntityFrameworkStores<MySqlDbContext>()
         .AddDefaultTokenProviders();
 

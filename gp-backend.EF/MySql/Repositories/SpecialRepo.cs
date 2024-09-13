@@ -31,7 +31,7 @@ namespace gp_backend.EF.MySql.Repositories
 
         public async Task<Specialization> GetByIdAsync(int id)
         {
-            return await _context.Specializations.Include(x => x.Diseases).FirstOrDefaultAsync(x => x.Id == id);
+            return await _context.Specializations.Include(x => x.Diseases).Include(x => x.ApplicationUsers).FirstOrDefaultAsync(x => x.Id == id);
         }
 
         public async Task<Specialization> InsertAsync(Specialization entity)

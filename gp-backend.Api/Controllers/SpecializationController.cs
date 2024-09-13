@@ -6,21 +6,28 @@ using gp_backend.Core.Models;
 using Microsoft.AspNetCore.Authorization;
 using Microsoft.AspNetCore.Http;
 using Microsoft.AspNetCore.Mvc;
+using gp_backend.Api.Dtos.Doctor;
+using Microsoft.AspNetCore.Identity;
 
 namespace gp_backend.Api.Controllers
 {
-    [Authorize(Roles = "Admin")]
+    //[Authorize(Roles = "Admin")]
     [Route("api/[controller]")]
     [ApiController]
     public class SpecializationController : ControllerBase
     {
         private readonly ISpecialRepo _specialRepo;
+        private readonly UserManager<ApplicationUser> _userManager;
+        private readonly RoleManager<IdentityRole> _roleManager;
         private readonly ILogger<DiseaseController> _logger;
 
-        public SpecializationController(ISpecialRepo specialRepo, ILogger<DiseaseController> logger)
+        public SpecializationController(ISpecialRepo specialRepo, ILogger<DiseaseController> logger,
+            UserManager<ApplicationUser> userManager, RoleManager<IdentityRole> roleManager)
         {
             _specialRepo = specialRepo;
             _logger = logger;
+            _userManager = userManager;
+            _roleManager = roleManager;
         }
 
         // Add
@@ -86,6 +93,42 @@ namespace gp_backend.Api.Controllers
                 Name = special.Name,
                 Diseases = diseasesDto
             }));
+        }
+        [HttpGet("get-all-docs")]
+        public async Task<IActionResult> GetAllDoctors()
+        {
+            var users = await _userManager.GetUsersInRoleAsync("Doc");
+            var doctors = new List<GetDoctorsDto>();
+            foreach (var doc in users)
+            {
+                doctors.Add(new GetDoctorsDto { Id = doc.Id, Email = doc.Email, Name = doc.FullName, PhoneNumber = doc.PhoneNumber });
+            }
+            return Ok(doctors);
+        }
+        [AllowAnonymous]
+        [HttpGet("get-doc")]
+        public async Task<IActionResult> GetAllDoctors(int id)
+        {
+            if (id <= 0)
+            {
+                return BadRequest(new BaseResponse(state: false, message: new List<string> { "Invalid specialization." }, null));
+            }
+            var special = await _specialRepo.GetByIdAsync(id);
+            var doctors = new List<GetDoctorsDto>();
+            foreach(var doc in special.ApplicationUsers)
+            {
+                doctors.Add(new GetDoctorsDto { Id = doc.Id, Email = doc.Email, Name = doc.FullName, PhoneNumber = doc.PhoneNumber });
+            }
+            return Ok(new BaseResponse(true, message: new List<string> { "Success." }, doctors));
+        }
+        [AllowAnonymous]
+        [HttpPost("ass-doc")]
+        public async Task<IActionResult> AssignDoctor(string id, int specialId)
+        {
+            var user = await _userManager.FindByIdAsync(id);
+            var special = await _specialRepo.GetByIdAsync(specialId);
+            special.ApplicationUsers.Add(user);
+            return NoContent();
         }
     }
 }
