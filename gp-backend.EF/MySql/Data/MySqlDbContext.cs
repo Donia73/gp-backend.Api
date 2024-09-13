@@ -20,6 +20,7 @@ namespace gp_backend.EF.MySql.Data
             builder.ApplyConfiguration(new ApplicationUserConfiguration());
             builder.ApplyConfiguration(new RoleConfiguration());
             builder.ApplyConfiguration(new UserRoleConfiguration());
+            builder.ApplyConfiguration(new RoleDoctorConfiguration());
         }
         public virtual DbSet<RefreshToken> RefreshTokens { get; set; }
         public virtual DbSet<Disease> Diseases { get; set; }

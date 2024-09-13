@@ -28,7 +28,6 @@ namespace gp_backend.Api.Controllers
         }
 
         // add
-        [RequestSizeLimit(1000_000_000)]
         [HttpPost("upload")]
         public async Task<IActionResult> Upload(IFormFile file)
         {
