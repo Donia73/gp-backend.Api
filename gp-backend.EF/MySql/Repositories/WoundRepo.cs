@@ -30,7 +30,7 @@ namespace gp_backend.EF.MySql.Repositories
 
         public async Task<Wound> GetByIdAsync(int id)
         {
-            return await _context.Wounds.FirstOrDefaultAsync(x => x.Id == id);
+            return await _context.Wounds.Include(x => x.Disease).Include(x => x.Image).ThenInclude(x => x.Content).FirstOrDefaultAsync(x => x.Id == id);
         }
 
         public async Task<Wound> InsertAsync(Wound entity)

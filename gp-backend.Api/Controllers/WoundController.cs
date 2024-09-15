@@ -164,7 +164,7 @@ namespace gp_backend.Api.Controllers
                         diseaseName += item.Name + " / ";
                         description += $"{item.Name}: \n\n";
                         description += item.Description + "\n\n";
-                        prevention.Concat(item.Preventions);
+                        prevention.AddRange(item.Preventions);
                         risk += item.Risk + "\n\n";
                     }
 
@@ -177,6 +177,7 @@ namespace gp_backend.Api.Controllers
                         Preventions = prevention,
                         Type = result.Type,
                         UploadDate = result.UploadDate,
+                        Image = Convert.ToBase64String(result?.Image?.Content?.Content),
                         Risk = risk
                     }));
                 }
