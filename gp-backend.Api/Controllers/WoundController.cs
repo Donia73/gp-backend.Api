@@ -41,21 +41,15 @@ namespace gp_backend.Api.Controllers
                 }
 
                 // extract the file description
-                int wound_id = await CallFlaskEndPoint(file);
-                string burnDegree = "";
-                Disease diseasse = new();
-                if (wound_id == 1)
-                {
-                    diseasse = (await _diseaseRepo.GetAllAsync("")).FirstOrDefault(d => d.Name == "first degree burn");
-                }
-                else if (wound_id == 2)
-                {
-                    diseasse = (await _diseaseRepo.GetAllAsync("")).FirstOrDefault(d => d.Name == "second degree burn");
-                }
-                else if (wound_id == 3)
-                {
-                    diseasse = (await _diseaseRepo.GetAllAsync("")).FirstOrDefault(d => d.Name == "third degree burn");
-                }
+                var response = await CallFlaskEndPoint(file);
+                if (response == null)
+                    return BadRequest();
+                Disease diseasse = (await _diseaseRepo.GetAllAsync("")).FirstOrDefault(x => x.Name.Contains( response[0]));
+                Disease diseasse_skin = (await _diseaseRepo.GetAllAsync("")).FirstOrDefault(x => x.Name.Contains( response[1]));
+
+
+                if (diseasse == null && diseasse_skin == null)
+                    return Ok(new BaseResponse(true, new List<string> { "Your Health is good"}, null));
 
                 var fileDescription = GetDescription(file);
                 var uid = User.Claims.FirstOrDefault(x => x.Type == "uid").Value;
@@ -70,23 +64,45 @@ namespace gp_backend.Api.Controllers
                     Advice = "Advice",
                     User = user,
                     ApplicationUserId = user.Id,
-                    Image = fileDescription,
-                    Disease = diseasse
+                    Image = fileDescription
                 };
+                string diseaseName = "";
+                string description = "";
+                string risk = "";
+                var prevention = new List<string>();
+                if(diseasse is not null)
+                {
+                    wound.Disease.Add(diseasse);
+                    diseaseName += diseasse.Name;
+                    description += $"{diseaseName}: \n\n";
+                    description += diseasse.Description + "\n\n";
+                    prevention.Concat(diseasse.Preventions);
+                    risk += diseasse.Risk;
+                }
+                if (diseasse_skin is not null)
+                {
+                    wound.Disease.Add(diseasse_skin);
+                    diseaseName += " / " + diseasse_skin.Name;
+                    description += $"{diseasse_skin.Name}: \n\n";
+                    description += diseasse_skin.Description;
+                    prevention.Concat(diseasse_skin.Preventions);
+                    risk += "\n\n" + diseasse_skin.Risk;
+                }
 
+                
                 var result = await _woundRepo.InsertAsync(wound);
                 await _woundRepo.SaveAsync();
 
                 return Ok(new BaseResponse(true, new List<string> { "Uploaded Successfuly" }, new GetWoundDetailsDto
                 {
                     Id = wound.Id,
-                    Type = "Type",
+                    Type = wound.Type,
                     Location = "Location",
-                    Name = diseasse.Name,
-                    Description = diseasse.Description,
+                    Name = diseaseName,
+                    Description = description,
                     Image = Convert.ToBase64String(fileDescription.Content.Content),
-                    Preventions = diseasse.Preventions,
-                    Risk = diseasse.Risk,
+                    Preventions = prevention,
+                    Risk = risk,
                     UploadDate = wound.UploadDate
                 }));
             }
@@ -105,12 +121,15 @@ namespace gp_backend.Api.Controllers
             var resultList = new List<GetWoundDto>();
             foreach(var wound in wounds)
             {
+                string name = "";
+                foreach (var item in wound.Disease)
+                    name += item.Name + " / ";
                 resultList.Add(new GetWoundDto
                 {
                     Id = wound.Id,
                     file = Convert.ToBase64String( wound?.Image?.Content?.Content),
                     Type = wound.Type,
-                    Name = wound.Disease.Name,
+                    Name = name,
                     AddedDate = wound.UploadDate.ToShortDateString(),
                 });
             }
@@ -135,17 +154,32 @@ namespace gp_backend.Api.Controllers
             {
                 result = await _woundRepo.GetByIdAsync(id);
                 if (result != null)
+                {
+                    string diseaseName = "";
+                    string description = "";
+                    string risk = "";
+                    var prevention = new List<string>();
+                    foreach(var item in result.Disease)
+                    {
+                        diseaseName += item.Name + " / ";
+                        description += $"{item.Name}: \n\n";
+                        description += item.Description + "\n\n";
+                        prevention.Concat(item.Preventions);
+                        risk += item.Risk + "\n\n";
+                    }
+
                     return Ok(new BaseResponse(true, new List<string> { "Success" }, new GetWoundDetailsDto
                     {
                         Id = result.Id,
-                        Description = result.Disease.Description,
-                        Name = result.Disease.Name,
+                        Description = description,
+                        Name = diseaseName,
                         Location = result.Location,
-                        Preventions = result.Disease.Preventions,
+                        Preventions = prevention,
                         Type = result.Type,
                         UploadDate = result.UploadDate,
-                        Risk = result.Disease.Risk
+                        Risk = risk
                     }));
+                }
                 else
                     return NotFound();
             }
@@ -176,7 +210,7 @@ namespace gp_backend.Api.Controllers
                 ContentDisposition = file.ContentDisposition,
             };
         }
-        private async Task<int> CallFlaskEndPoint(IFormFile file)
+        private async Task<List<string>> CallFlaskEndPoint(IFormFile file)
         {
             using(var client = new HttpClient())
             {
@@ -193,7 +227,7 @@ namespace gp_backend.Api.Controllers
 
                     var result = await response.Content.ReadFromJsonAsync<WoundIdDto>();
 
-                    return result.Output[0];
+                    return result.Output;
                 }
             }
         }

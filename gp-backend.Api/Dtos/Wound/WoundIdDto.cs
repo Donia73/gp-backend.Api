@@ -2,6 +2,6 @@
 {
     public class WoundIdDto
     {
-        public List<int> Output { get; set; }
+        public List<string> Output { get; set; }
     }
 }
