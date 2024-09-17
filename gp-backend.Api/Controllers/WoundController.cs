@@ -76,7 +76,7 @@ namespace gp_backend.Api.Controllers
                     diseaseName += diseasse.Name;
                     description += $"{diseaseName}: \n\n";
                     description += diseasse.Description + "\n\n";
-                    prevention.Concat(diseasse.Preventions);
+                    prevention.AddRange(diseasse.Preventions);
                     risk += diseasse.Risk;
                 }
                 if (diseasse_skin is not null)
@@ -85,7 +85,7 @@ namespace gp_backend.Api.Controllers
                     diseaseName += " / " + diseasse_skin.Name;
                     description += $"{diseasse_skin.Name}: \n\n";
                     description += diseasse_skin.Description;
-                    prevention.Concat(diseasse_skin.Preventions);
+                    prevention.AddRange(diseasse_skin.Preventions);
                     risk += "\n\n" + diseasse_skin.Risk;
                 }
 
